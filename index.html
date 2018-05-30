@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8"/>
+		<title>Kinotools | enfused upload</title>
+		<link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico" />
+		<!-- Google web fonts -->
+		<link href="assets/css.css" rel='stylesheet' />
+
+		<!-- The main CSS file -->
+		<link href="assets/css/style.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<div style="width: 100%; text-align: center;">
+			<img src="assets/img/logoKINOKI.png" alt="" style="width: 20%;"/>
+		</div>
+		<div>
+		<h2>1 - Uploadez vos jpegs</h2>
+		<form id="upload" method="post" action="upload.php" enctype="multipart/form-data">
+			<label>Utilisateur :&nbsp;
+			<select name="user" id="user">
+				<option value="marc">marc</option>
+				<option value="rafa">rafa</option>
+			</select>&nbsp;
+
+			<label>Config :&nbsp;
+			<select name="config" id="config">
+				<option value="nikon8mm">Nikon D7200 8mm</option>
+				<option value="canon50d8mm">Canon 50D + Canon 8-15mm</option>
+			</select>
+				
+			</label>
+			<div id="drop">
+				Déposez les JPEGS enfusés ici<br/>
+
+				<a>Browse</a>
+				<input type="file" name="upl" multiple />
+			</div>
+
+			<ul>
+				<!-- The file uploads will be shown here -->
+			</ul>
+
+		</form>
+		</div>
+		<div>
+		<h2>2 - Assemblez les panoramas</h2>
+		<div id="images2stitch">
+            <div id="enfused_prev"></div>
+            <a id="btstitch">Stitch</a>
+            <div id="stitch_result">
+			<img style="display: none;" id="loading" src="assets/img/loading.gif"/>
+			</div>
+		</div>
+        </div>
+	<!-- JavaScript Includes -->
+		<script src="assets/js/jquery.min.js"></script>
+		<script src="assets/js/jquery.knob.js"></script>
+
+		<!-- jQuery File Upload Dependencies -->
+		<script src="assets/js/jquery.ui.widget.js"></script>
+		<script src="assets/js/jquery.iframe-transport.js"></script>
+		<script src="assets/js/jquery.fileupload.js"></script>
+		
+		<!-- Our main JS file -->
+		<script src="assets/js/script.js"></script>
+
+		<script>
+		$( "#btstitch" ).click(function() {
+			var user = $("#user").val();
+			var config = $("#config").val();
+			//console.log(config);
+			$('#loading').css("display","inline-block");
+			$('#btstitch').css("display","none");
+			$('#stitch_result').load('./stitch.php?user='+user+'&config='+config, function() {
+			  $('#loading').css("display","none");
+			});
+			
+		});
+		//
+		</script>
+
+	</body>
+</html>

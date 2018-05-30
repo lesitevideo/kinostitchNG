@@ -1,21 +1,29 @@
 #!/bin/bash
 
 SECONDS=0;
-list=(./enfused/*)
+list=(enfused/$1/*.jpg)
 
-echo $((${#list[@]})) fichiers / $((${#list[@]}/4)) panos
+echo $((${#list[@]})) fichiers / $((${#list[@]}/4)) panos"<br/>"
 
 nd=$((${#list[@]}/4))
 
 nf=4
 
+# echec si il y a pas au moins 4 jpegs
+if [ $nd = 0 ]
+then
+        echo "Echec"
+        exit
+fi
+
+#loop sur les lots de 4 jpgs
 for (( i=1; i<=nd; i++ )); do
 	filestostitch=${list[@]:(i-1)*nf:nf}
-	stitchto="./panos/pano"$i".jpg"
+	stitchto="panos/"$1"/pano"$i".jpg"
 	
     declare -a ARRAY
 	#echo $filestostitch
-	echo "Assemblage "$stitchto
+	#echo "Assemblage "$stitchto
     
     #boucler sur la liste pour replir l'array
     z=0
@@ -158,18 +166,18 @@ o f2 y135.0954635830859 r-1.841138832494892 p6.996200258477615 v=0 a=0 b=0 c=0 d
 # optimizer:
 v v a b c d e y2 r2 p2 y3 r3 p3 y4 r4 p4" >> tpl.pts'
         
-        #assembler le panorama
-        ./mac/PTStitcherNG -q -o $stitchto ./tpl.pts
+        #assembler le panorama -q pour non verbose
+        wine PTStitcherNG.exe -c -o $stitchto tpl.pts
 		
         #exifs Google OSC
-		echo "Exif panorama ..."
-		exiftool -overwrite_original -Make=Kinoki.fr -Model=KINOBOT -Software=KINOSTITCH -FullPanoWidthPixels=10000 -FullPanoHeightPixels=5000 -CroppedAreaImageWidthPixels=10000 -CroppedAreaImageHeightPixels=5000 -CroppedAreaLeftPixels=0 -CroppedAreaTopPixels=0 -UsePanoramaViewer=True -ProjectionType=equirectangular -PoseHeadingDegrees=0 $stitchto
+		#echo "Exif panorama ..."
+		exiftool -q -overwrite_original -Make=Kinoki.fr -Model=KINOBOT -Software=KINOSTITCH -FullPanoWidthPixels=10000 -FullPanoHeightPixels=5000 -CroppedAreaImageWidthPixels=10000 -CroppedAreaImageHeightPixels=5000 -CroppedAreaLeftPixels=0 -CroppedAreaTopPixels=0 -UsePanoramaViewer=True -ProjectionType=equirectangular -PoseHeadingDegrees=0 $stitchto
 		
         #virer le .pts
-        rm ./tpl.pts
+        rm tpl.pts ${ARRAY[0]} ${ARRAY[1]} ${ARRAY[2]} ${ARRAY[3]}
         
-		echo "fini "$stitchto
+		#echo "fini "$stitchto
 	
 done
 
-echo "fini de stitcher en "$SECONDS" secondes"
+echo "fini de stitcher en "$SECONDS" secondes<br/>"
